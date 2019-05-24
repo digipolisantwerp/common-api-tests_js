@@ -15,7 +15,7 @@ function commonTest(responseCode, contentType, time) {
       });
   }
 
-  if(contentType){
+  if (contentType){
       it('should return ' + contentType, () => {
           response.should.have.header('Content-Type', contentType);
       });
