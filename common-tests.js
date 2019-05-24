@@ -21,3 +21,20 @@ function commonTest(responseCode, contentType, time) {
       });
   }
 }
+function commonTestWithoutTime(responseCode, contentType,) {
+    if (responseCode >= 200 && responseCode <= 399) {
+        it('should be a successful response', () => {
+            response.should.have.status(responseCode);
+        });
+    } else if (responseCode >= 400 && responseCode <= 599) {
+        it('should be a unsuccessful response', () => {
+            response.should.have.status(responseCode);
+        });
+    }
+    
+    if (contentType){
+        it('should return ' + contentType, () => {
+            response.should.have.header('Content-Type', contentType);
+        });
+    }
+}
