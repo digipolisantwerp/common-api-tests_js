@@ -15,7 +15,7 @@ Importing the Common API testscripts file is similar to installing Postman BDD.
 
 **1. Download the Common API tests**
 Create a `GET` request in Postman and point it to the following URL:<br>
-[`https://raw.githubusercontent.com/lievenvg/common-api-tests/master/common-tests.js`](https://raw.githubusercontent.com/lievenvg/common-api-tests/master/common-tests.js)
+[`https://raw.githubusercontent.com/digipolisantwerp/common-api-tests_js/master/common-tests.js`](https://raw.githubusercontent.com/digipolisantwerp/common-api-tests_js/master/common-tests.js)
 
 **2. Install Postman BDD**
 In the same request that you created in Step 1, go to the "Tests" tab and add the following script:
@@ -32,8 +32,8 @@ postman.setGlobalVariable('commonTests', responseBody);
 | Name         | Default value | Description |
 | -----------  | ------ | -------------------------- |
 | `Status code: string;` | - | The status code that should be returned in the response. |
-| `Response time: integer;` | - | The maximum response time in milliseconds. |
 | `Content-Type: string;` | - | The Content-Type that should be returned in the response. |
+| `Response time: integer;` | - | The maximum response time in milliseconds. |
 
 ### Example
 
@@ -43,7 +43,7 @@ eval(globals.commonTests);
 
 // "add" the common test to your testscript
 describe('GET ' + environment.url + '/testapi', () => {
-  commonTest("200",500,"application/json; charset=utf-8");
+  commonTest("200", "application/json; charset=utf-8", 500);
   // "add" the rest of your testscript
   ...
 }
