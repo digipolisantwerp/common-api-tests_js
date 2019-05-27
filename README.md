@@ -67,6 +67,6 @@ Your contributions are most welcome as pull requests, both code changes and docu
 
 ## License
 
-[MIT](./LICENSE.md)
+[MIT](./LICENSE)
 
 Copyright (c) 2019-present, Digipolis
