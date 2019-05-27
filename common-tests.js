@@ -21,7 +21,7 @@ function commonTest(responseCode, contentType, time) {
       });
   }
 }
-function commonTestWithoutTime(responseCode, contentType,) {
+function commonTestWithoutContentType(responseCode, time,) {
     if (responseCode >= 200 && responseCode <= 399) {
         it('should be a successful response', () => {
             response.should.have.status(responseCode);
@@ -32,10 +32,10 @@ function commonTestWithoutTime(responseCode, contentType,) {
         });
     }
     
-    if (contentType){
-        it('should return ' + contentType, () => {
-            response.should.have.header('Content-Type', contentType);
-        });
+    if (time){
+      it('should respond in a timely manner', () => {
+          response.time.should.be.below(time);
+      });
     }
 }
 function commonTestWithScheme(responseCode, contentType, time, jsonScheme) {
