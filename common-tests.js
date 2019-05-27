@@ -38,7 +38,7 @@ function commonTestWithoutTime(responseCode, contentType,) {
         });
     }
 }
-function commonTestWithSchema(responseCode, contentType, time, jsonSchema) {
+function commonTestWithScheme(responseCode, contentType, time, jsonScheme) {
   if (responseCode >= 200 && responseCode <= 399) {
       it('should be a successful response', () => {
           response.should.have.status(responseCode);
@@ -61,10 +61,10 @@ function commonTestWithSchema(responseCode, contentType, time, jsonSchema) {
       });
   }
   
-  if (jsonSchema){
-    it('should match against a JSON Schema', () => {
+  if (jsonScheme){
+    it('should match against a JSON Scheme', () => {
     // For more information about JSON Schema, see https://spacetelescope.github.io/understanding-json-schema/basics.html
-        response.body.should.have.schema(jsonSchema);
+        response.body.should.have.schema(jsonScheme);
     });
   }
 }
