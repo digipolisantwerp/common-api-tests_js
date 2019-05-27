@@ -34,7 +34,7 @@ postman.setGlobalVariable('commonTests', responseBody);
 | `Status code: integer;` | - | The status code that should be returned in the response. |
 | `Content-Type: string;` | - | The Content-Type that should be returned in the response. |
 | `Response time: integer;` | - | The maximum response time in milliseconds. |
-| 'Json-scheme: object;' | - | The jsonScheme that should be returned in the response. |
+| `Json scheme: object;` | - | The jsonScheme that should be returned in the response. |
 
 ### Example
 
