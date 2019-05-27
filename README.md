@@ -31,9 +31,10 @@ postman.setGlobalVariable('commonTests', responseBody);
 
 | Name         | Default value | Description |
 | -----------  | ------ | -------------------------- |
-| `Status code: string;` | - | The status code that should be returned in the response. |
+| `Status code: integer;` | - | The status code that should be returned in the response. |
 | `Content-Type: string;` | - | The Content-Type that should be returned in the response. |
 | `Response time: integer;` | - | The maximum response time in milliseconds. |
+| 'Json-scheme: object;' | - | The jsonScheme that should be returned in the response. |
 
 ### Example
 
@@ -43,7 +44,10 @@ eval(globals.commonTests);
 
 // "add" the common test to your testscript
 describe('GET ' + environment.url + '/testapi', () => {
-  commonTest("200", "application/json; charset=utf-8", 500);
+  //commontest without scheme
+  commonTest(200, "application/json; charset=utf-8", 500);
+  //commontest with json scheme
+  commonTestWithScheme(200, "application/json; charset=utf-8", 500, jsonscheme);
   // "add" the rest of your testscript
   ...
 }
