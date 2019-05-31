@@ -21,7 +21,7 @@ function commonTest(responseCode, contentType, time) {
       });
   }
 }
-function commonTestWithoutContentType(responseCode, time,) {
+function commonTestWithoutContentType(responseCode, time) {
     if (responseCode >= 200 && responseCode <= 399) {
         it('should be a successful response', () => {
             response.should.have.status(responseCode);
