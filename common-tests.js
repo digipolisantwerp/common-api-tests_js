@@ -88,10 +88,15 @@ function commonTestWithLocation(responseCode, contentType, location, time, jsonS
   if (contentType){
       it('should return ' + contentType, () => {
           response.should.have.header('Content-Type', contentType);
-		  response.should.have.header('Location', location);
       });
   }
   
+  if (location){
+      it('should return ' + location, () => {
+          response.should.have.header('Location', location);
+      });
+  }
+	
   if (jsonScheme){
     it('should match against a JSON Scheme', () => {
     // For more information about JSON Schema, see https://spacetelescope.github.io/understanding-json-schema/basics.html
