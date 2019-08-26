@@ -36,9 +36,15 @@ function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) 
  * @param {number} time - elapsed time of the response
  */
 function checkTime(time) {
-	it('should respond in a timely manner', () => {
-		response.time.should.be.below(time);
-	});
+	if (time > 0) {
+		it('should respond within ' + (time >= 1000 ? time/1000 + ' second(s)' : time + ' millisecond(s)'), () => {
+			response.time.should.be.below(time);
+		});
+	} else {
+		it('should be tested against a strictly positive time interval', () => {
+			expect(false).to.be.true;
+		});
+	}
 }
 
 /**
@@ -74,7 +80,7 @@ function checkStatusCode(statusCode) {
 			});
 			break;
 		default:
-			it('should be an existing status code', () => {
+			it('should be tested against an existing status code', () => {
 				expect(false).to.be.true;
 			});
 	}
