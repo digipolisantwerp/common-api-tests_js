@@ -53,7 +53,7 @@ function checkTime(time) {
  * @param {number} statusCode - code of the response status
  */
 function checkStatusCode(statusCode) {
-	switch(true) {
+	switch (true) {
 		case (100 <= statusCode && statusCode <= 199):
 			it('should be an information response', () => {
 				response.should.have.status(statusCode);
@@ -92,7 +92,7 @@ function checkStatusCode(statusCode) {
  * @param {string} contentType - type of the response body
  */
 function checkContentType(contentType) {
-	it('should be of type ' + contentType, () => {
+	it('should be of type \'' + contentType + '\'', () => {
 		response.should.have.header('Content-Type', contentType);
 	});
 }
@@ -114,7 +114,7 @@ function checkJSONSchema(jsonSchema) {
  * @param {string} location - location of the source
  */
 function checkLocation(location) {
-	it('should return the location ' + location, () => {
+	it('should return the location \'' + location + '\'', () => {
 		response.should.have.header('Location', location);
 	});
 }
