@@ -103,9 +103,15 @@ function checkContentType(contentType) {
  * @param {Object} jsonSchema - JSON schema of the response body
  */
 function checkJSONSchema(jsonSchema) {
-	it('should match against the JSON schema', () => {
-		response.body.should.have.schema(jsonSchema);
-	});
+    if (typeof jsonSchema == 'object') {
+        it('should match against the JSON schema', () => {
+            response.body.should.have.schema(jsonSchema);
+        });
+    } else {
+        it('should be tested against a JSON schema object', () => {
+            expect(false).to.be.true;
+        });
+    }
 }
 
 /**
