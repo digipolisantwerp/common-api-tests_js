@@ -133,7 +133,7 @@ function checkStatusCode(statusCode) {
  */
 function checkContentType(contentType) {
 	it('should be of type \'' + contentType + '\'', () => {
-		response.should.have.header('Content-Type', contentType);
+		response.type.should.equal(contentType);
 	});
 }
 
