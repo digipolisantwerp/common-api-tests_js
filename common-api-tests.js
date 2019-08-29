@@ -31,11 +31,12 @@ function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) 
 }
 
 /**
- * Generates a random number between min and max. Positive and negative numbers are allowed.
+ * Generates a random number. Positive and negative numbers are allowed.
  *
  * @param {number} min - minimum number (included)
  * @param {number} max - maximum number (included)
- * @returns {number} Random number between min and max
+ * @returns {number} Random number that ranges from min to max
+ * @throws {Error} Parameters must be numbers
  */
 function generateNumber(min, max) {
 	if (typeof min == 'number' && typeof max == 'number') {
@@ -54,6 +55,7 @@ function generateNumber(min, max) {
  *
  * @param {number} length - Amount of characters to be generated
  * @returns {string} Text with random characters
+ * @throws {Error} Parameter must be a number
  */
 function generateString(length) {
 	if (typeof length == 'number') {
