@@ -31,6 +31,46 @@ function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) 
 }
 
 /**
+ * Generates a random number. Positive and negative numbers are allowed.
+ *
+ * @param {number} min - minimum number (included)
+ * @param {number} max - maximum number (included)
+ * @returns {number} Random number that ranges from min to max
+ * @throws {Error} Parameters must be numbers
+ */
+function generateNumber(min, max) {
+	if (typeof min == 'number' && typeof max == 'number') {
+		if (min <= max) {
+			return Math.floor(Math.random() * (max - min + 1) + min);
+		} else {
+			return Math.floor(Math.random() * (min - max + 1) + max);
+		}
+	} else {
+		throw new Error('Parameter values must be of type \'number\' for function \'generateNumber(min, max)\'');
+	}
+}
+
+/**
+ * Generates a random string of characters.
+ *
+ * @param {number} length - Amount of characters to be generated
+ * @returns {string} Text with random characters
+ * @throws {Error} Parameter must be a number
+ */
+function generateString(length) {
+	if (typeof length == 'number') {
+		var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+			text = "";
+		for (var i = 0; i < length; i++) {
+			text += characters.charAt(Math.floor(Math.random() * characters.length));
+		}
+		return text;
+	} else {
+		throw new Error('Parameter value must be of type \'number\' for function \'generateString(length)\'');
+	}
+}
+
+/**
  * Checks if the service responds within the required response time.
  *
  * @param {number} time - elapsed time of the response
@@ -103,15 +143,15 @@ function checkContentType(contentType) {
  * @param {Object} jsonSchema - JSON schema of the response body
  */
 function checkJSONSchema(jsonSchema) {
-    if (typeof jsonSchema == 'object') {
-        it('should match against the JSON schema', () => {
-            response.body.should.have.schema(jsonSchema);
-        });
-    } else {
-        it('should be tested against a JSON schema object', () => {
-            expect(false).to.be.true;
-        });
-    }
+	if (typeof jsonSchema == 'object') {
+		it('should match against the JSON schema', () => {
+			response.body.should.have.schema(jsonSchema);
+		});
+	} else {
+		it('should be tested against a JSON schema object', () => {
+			expect(false).to.be.true;
+		});
+	}
 }
 
 /**
