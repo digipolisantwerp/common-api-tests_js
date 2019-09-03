@@ -17,6 +17,19 @@ function testCommon(statusCode, contentType, jsonSchema, location) {
 }
 
 /**
+ * Executes functions testCommon and logResponseBody.
+ *
+ * @param {number} statusCode - status code of the response
+ * @param {string} contentType - content type of the response
+ * @param {Object} jsonSchema - JSON schema of the response
+ * @param {string} location - location of the source
+ */
+function testCommonAndLog(statusCode, contentType, jsonSchema, location) {
+	logResponseBody();
+	testCommon(statusCode, contentType, jsonSchema, location);
+}
+
+/**
  * Executes functions testCommon and checkTime.
  *
  * @param {number} statusCode - status code of the response
@@ -28,6 +41,14 @@ function testCommon(statusCode, contentType, jsonSchema, location) {
 function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) {
 	testCommon(statusCode, contentType, jsonSchema, location);
 	time && checkTime(time);
+}
+
+/**
+ * Logs the response body of the request. This function is for test automation logging purposes.
+ */
+function logResponseBody() {
+	// The 'it' function is being used because a console log results in an unreadable small vertical text. This method will count as an extra test.
+	it('response body: ' + responseBody, () => {});
 }
 
 /**
