@@ -10,23 +10,11 @@
  * @param {string} location - location of the source
  */
 function testCommon(statusCode, contentType, jsonSchema, location) {
+	logResponseBody();
 	statusCode && checkStatusCode(statusCode);
 	contentType && checkContentType(contentType);
 	jsonSchema && checkJSONSchema(jsonSchema);
 	location && checkLocation(location);
-}
-
-/**
- * Executes functions testCommon and logResponseBody.
- *
- * @param {number} statusCode - status code of the response
- * @param {string} contentType - content type of the response
- * @param {Object} jsonSchema - JSON schema of the response
- * @param {string} location - location of the source
- */
-function testCommonAndLog(statusCode, contentType, jsonSchema, location) {
-	logResponseBody();
-	testCommon(statusCode, contentType, jsonSchema, location);
 }
 
 /**
