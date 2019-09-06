@@ -85,7 +85,7 @@ function generateString(length) {
  * @param {Array.<Object>} array - The array to be searched
  * @param {string} property - The name of the property to be matched
  * @param {*} value - The value of the property to be matched
- * @returns {number} Index of the first matching object
+ * @returns {number} Index of the first matching object or -1 if there is no match
  * @throws {Error} Parameters must be an array, string, any
  */
 function getIndexObjectInArray(array, property, value) {
