@@ -80,6 +80,23 @@ function generateString(length) {
 }
 
 /**
+ * Gets the index of the first object in an array that matches the given property and value.
+ *
+ * @param {Array.<Object>} array - The array to be searched
+ * @param {string} property - The name of the property to be matched
+ * @param {*} value - The value of the property to be matched
+ * @returns {number} Index of the first matching object
+ * @throws {Error} Parameters must be an array, string, any
+ */
+function getIndexObjectInArray(array, property, value) {
+	if (Array.isArray(array) && array.every(item => typeof item == 'object') && typeof property == 'string') {
+		return array.findIndex(item => item[property] == value);
+	} else {
+		throw new Error('Parameter values must be of type \'Array.<Object>, string, any\' for function \'getIndexObjectInArray(array, property, value)\'');
+	}
+}
+
+/**
  * Checks if the service responds within the required response time.
  *
  * @param {number} time - elapsed time of the response
