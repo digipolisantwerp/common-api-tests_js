@@ -193,6 +193,8 @@ function checkLocation(location) {
 
 /**
  * Gets the JSON schema for HAL. The schema does not check specific resource content but only the basic HAL structure.
+ *
+ * @returns {Object} JSON schema object for HAL
  */
 function getSchemaHAL() {
 	return {
