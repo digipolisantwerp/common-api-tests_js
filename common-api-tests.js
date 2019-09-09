@@ -190,3 +190,98 @@ function checkLocation(location) {
 		response.should.have.header('Location', location);
 	});
 }
+
+/**
+ * Gets the JSON schema for HAL. The schema does not check specific resource content but only the basic HAL structure.
+ */
+function getSchemaHAL() {
+	return {
+		"type": "object",
+		"required": [ "_links", "_embedded", "_page" ],
+		"properties": {
+			"_links": {
+				"type": "object",
+				"required": [ "self", "next", "previous", "first", "last" ],
+				"properties": {
+					"self": {
+						"type": "object",
+						"required": [ "href" ],
+						"properties": {
+							"href": {
+								"type": "string",
+								"minLength": 1
+							}
+						}
+					},
+					"next": {
+						"type": [ "object", "null" ],
+						"required": [ "href" ],
+						"properties": {
+							"href": {
+								"type": "string",
+								"minLength": 1
+							}
+						}
+					},
+					"previous": {
+						"type": [ "object", "null" ],
+						"required": [ "href" ],
+						"properties": {
+							"href": {
+								"type": "string",
+								"minLength": 1
+							}
+						}
+					},
+					"first": {
+						"type": "object",
+						"required": [ "href" ],
+						"properties": {
+							"href": {
+								"type": "string",
+								"minLength": 1
+							}
+						}
+					},
+					"last": {
+						"type": "object",
+						"required": [ "href" ],
+						"properties": {
+							"href": {
+								"type": "string",
+								"minLength": 1
+							}
+						}
+					}
+				}
+			},
+			"_embedded": {
+				"type": "object",
+				"required": [ "resourceList" ],
+				"properties": {
+					"resourceList": {
+						"type": "array"
+					}
+				}
+			},
+			"_page": {
+				"type": "object",
+				"required": [ "size", "totalElements", "totalPages", "number" ],
+				"properties": {
+					"size": {
+						"type": "number"
+					},
+					"totalElements": {
+						"type": "number"
+					},
+					"totalPages": {
+						"type": "number"
+					},
+					"number": {
+						"type": "number"
+					}
+				}
+			}
+		}
+	}
+}
