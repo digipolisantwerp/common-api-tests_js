@@ -36,7 +36,7 @@ function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) 
  */
 function logResponseBody() {
 	// The 'it' function is being used because a console log results in an unreadable small vertical text. This method will count as an extra test.
-	it('response body: ' + responseBody, () => {});
+	!!responseBody && it('response body: ' + responseBody, () => {});
 }
 
 /**
