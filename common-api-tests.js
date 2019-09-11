@@ -192,6 +192,15 @@ function checkLocation(location) {
 }
 
 /**
+ * Gets the regex pattern for ISO datetimes
+ *
+ * @returns {string} regex pattern string for ISO datetimes
+ */
+function getRegexISODateTime() {
+	return "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.?[0-9]*Z$";
+}
+
+/**
  * Gets the JSON schema for HAL. The schema does not check specific resource content but only the basic HAL structure.
  *
  * @returns {Object} JSON schema object for HAL
