@@ -45,17 +45,17 @@ function logResponseBody() {
  * @param {number} min - minimum number (included)
  * @param {number} max - maximum number (included)
  * @returns {number} Random number that ranges from min to max
- * @throws {Error} Parameters must be numbers
+ * @throws {TypeError} Parameters must be numbers
  */
 function generateNumber(min, max) {
-	if (typeof min == 'number' && typeof max == 'number') {
+	if (typeof min === 'number' && typeof max === 'number') {
 		if (min <= max) {
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		} else {
 			return Math.floor(Math.random() * (min - max + 1) + max);
 		}
 	} else {
-		throw new Error('Parameter values must be of type \'number\' for function \'generateNumber(min, max)\'');
+		throw new TypeError('Parameter values must be of type \'number\' for function \'generateNumber(min, max)\'');
 	}
 }
 
@@ -64,10 +64,10 @@ function generateNumber(min, max) {
  *
  * @param {number} length - Amount of characters to be generated
  * @returns {string} Text with random characters
- * @throws {Error} Parameter must be a number
+ * @throws {TypeError} Parameter must be a number
  */
 function generateString(length) {
-	if (typeof length == 'number') {
+	if (typeof length === 'number') {
 		var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
 			text = "";
 		for (var i = 0; i < length; i++) {
@@ -75,7 +75,7 @@ function generateString(length) {
 		}
 		return text;
 	} else {
-		throw new Error('Parameter value must be of type \'number\' for function \'generateString(length)\'');
+		throw new TypeError('Parameter value must be of type \'number\' for function \'generateString(length)\'');
 	}
 }
 
@@ -86,13 +86,13 @@ function generateString(length) {
  * @param {string} property - The name of the property to be matched
  * @param {*} value - The value of the property to be matched
  * @returns {number} Index of the first matching object or -1 if there is no match
- * @throws {Error} Parameters must be an array, string, any
+ * @throws {TypeError} Parameters must be an array, string, any
  */
 function getIndexObjectInArray(array, property, value) {
-	if (Array.isArray(array) && array.every(item => typeof item == 'object') && typeof property == 'string') {
-		return array.findIndex(item => item[property] == value);
+	if (Array.isArray(array) && array.every(item => typeof item === 'object') && typeof property === 'string') {
+		return array.findIndex(item => item[property] === value);
 	} else {
-		throw new Error('Parameter values must be of type \'Array.<Object>, string, any\' for function \'getIndexObjectInArray(array, property, value)\'');
+		throw new TypeError('Parameter values must be of type \'Array.<Object>, string, any\' for function \'getIndexObjectInArray(array, property, value)\'');
 	}
 }
 
