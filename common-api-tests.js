@@ -64,7 +64,7 @@ function delayTime(time) {
 		console.log('Delaying for ' + convertTime(time) + '...');
 		setTimeout(() => console.log('Delay finished'), time);
 	} else {
-		throw new TypeError('Parameter value must be of type \'number\' for function \'delay(time)\'');
+		throw new TypeError('Parameter value must be of type \'number\' for function \'delayTime(time)\'');
 	}
 }
 
