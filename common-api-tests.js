@@ -56,7 +56,7 @@ function convertTime(time) {
 /**
  * Delays for the set amount of time.
  *
- * @param {number} time - time interval
+ * @param {number} time - time interval in milliseconds
  * @throws {TypeError} Parameter must be a number
  */
 function delayTime(time) {
