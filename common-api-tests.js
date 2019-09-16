@@ -55,6 +55,7 @@ function convertTime(time) {
 
 /**
  * Delays for the set amount of time.
+ * Newman v3.8.3 is the minimum requirement according https://github.com/postmanlabs/newman/issues/1318
  *
  * @param {number} time - time interval in milliseconds
  * @throws {TypeError} Parameter must be a number
