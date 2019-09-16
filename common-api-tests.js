@@ -40,7 +40,7 @@ function logResponseBody() {
 }
 
 /**
- * Converts time to the correct multiple
+ * Converts time to the correct multiple.
  *
  * @param {number} time - time in milliseconds
  * @throws {TypeError} Parameter must be a number
