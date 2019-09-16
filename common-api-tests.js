@@ -40,6 +40,35 @@ function logResponseBody() {
 }
 
 /**
+ * Converts time to the correct multiple
+ *
+ * @param {number} time - time in milliseconds
+ * @throws {TypeError} Parameter must be a number
+ */
+function convertTime(time) {
+	if (typeof time === 'number') {
+		return time >= 1000 ? time/1000 + 's' : time + 'ms';
+	} else {
+		throw new TypeError('Parameter value must be of type \'number\' for function \'convertTime(time)\'');
+	}
+}
+
+/**
+ * Delays for the set amount of time.
+ *
+ * @param {number} time - time interval in milliseconds
+ * @throws {TypeError} Parameter must be a number
+ */
+function delayTime(time) {
+	if (typeof time === 'number') {
+		console.log('Delaying for ' + convertTime(time) + '...');
+		setTimeout(() => console.log('Delay finished'), time);
+	} else {
+		throw new TypeError('Parameter value must be of type \'number\' for function \'delayTime(time)\'');
+	}
+}
+
+/**
  * Generates a random number. Positive and negative numbers are allowed.
  *
  * @param {number} min - minimum number (included)
@@ -103,7 +132,7 @@ function getIndexObjectInArray(array, property, value) {
  */
 function checkTime(time) {
 	if (time > 0) {
-		it('should respond within ' + (time >= 1000 ? time/1000 + ' second(s)' : time + ' millisecond(s)'), () => {
+		it('should respond within ' + convertTime(time), () => {
 			response.time.should.be.below(time);
 		});
 	} else {
