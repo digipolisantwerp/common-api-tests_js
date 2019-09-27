@@ -1,5 +1,6 @@
 // This library provides functions that are commonly used throughout the test process.
 // For more information about JSON Schema, see https://spacetelescope.github.io/understanding-json-schema/basics.html
+// Negative regex values can be extended by an OR function. Example: (?!wrongvalue1|wrongvalue2|wrongvalueN)
 
 /**
  * Checks commonly used variables.
@@ -226,7 +227,7 @@ function checkLocation(location) {
  * @returns {string} regex pattern string for GUID's
  */
 function getRegexGUID() {
-	return "^[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}$";
+	return "^(?!00000000-0000-0000-0000-000000000000)([0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12})$";
 }
 
 /**
@@ -235,7 +236,7 @@ function getRegexGUID() {
  * @returns {string} regex pattern string for ISO datetimes
  */
 function getRegexISODateTime() {
-	return "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.?[0-9]*Z$";
+	return "^(?!0001-01-01T00:00:00Z)([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.?[0-9]*Z)$";
 }
 
 /**
