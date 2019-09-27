@@ -55,7 +55,6 @@ function convertTime(time) {
 
 /**
  * Delays for the set amount of time.
- * Newman v3.8.3 is the minimum requirement according https://github.com/postmanlabs/newman/issues/1318
  *
  * @param {number} time - time interval in milliseconds
  * @throws {TypeError} Parameter must be a number
@@ -219,6 +218,15 @@ function checkLocation(location) {
 	it('should return the location \'' + location + '\'', () => {
 		response.should.have.header('Location', location);
 	});
+}
+
+/**
+ * Gets the regex pattern for GUID's
+ *
+ * @returns {string} regex pattern string for GUID's
+ */
+function getRegexGUID() {
+	return "^[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}$";
 }
 
 /**
