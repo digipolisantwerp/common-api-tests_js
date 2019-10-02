@@ -98,7 +98,7 @@ function generateNumber(min, max) {
  */
 function generateString(length) {
 	if (typeof length === 'number') {
-		var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+		var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
 			text = "";
 		for (var i = 0; i < length; i++) {
 			text += characters.charAt(Math.floor(Math.random() * characters.length));
