@@ -50,7 +50,7 @@ function convertTime(time) {
 	if (typeof time === 'number') {
 		return time >= 1000 ? time/1000 + 's' : time + 'ms';
 	} else {
-		throw new TypeError('Parameter value must be of type \'number\' for function \'convertTime(time)\'');
+		throw new TypeError('Parameter value must be of type "number" for function "convertTime(time)"');
 	}
 }
 
@@ -65,7 +65,7 @@ function delayTime(time) {
 		console.log('Delaying for ' + convertTime(time) + '...');
 		setTimeout(() => console.log('Delay finished'), time);
 	} else {
-		throw new TypeError('Parameter value must be of type \'number\' for function \'delayTime(time)\'');
+		throw new TypeError('Parameter value must be of type "number" for function "delayTime(time)"');
 	}
 }
 
@@ -85,7 +85,7 @@ function generateNumber(min, max) {
 			return Math.floor(Math.random() * (min - max + 1) + max);
 		}
 	} else {
-		throw new TypeError('Parameter values must be of type \'number\' for function \'generateNumber(min, max)\'');
+		throw new TypeError('Parameter values must be of type "number" for function "generateNumber(min, max)"');
 	}
 }
 
@@ -98,14 +98,14 @@ function generateNumber(min, max) {
  */
 function generateString(length) {
 	if (typeof length === 'number') {
-		var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-			text = "";
+		var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+			text = '';
 		for (var i = 0; i < length; i++) {
 			text += characters.charAt(Math.floor(Math.random() * characters.length));
 		}
 		return text;
 	} else {
-		throw new TypeError('Parameter value must be of type \'number\' for function \'generateString(length)\'');
+		throw new TypeError('Parameter value must be of type "number" for function "generateString(length)"');
 	}
 }
 
@@ -122,7 +122,7 @@ function getIndexObjectInArray(array, property, value) {
 	if (Array.isArray(array) && array.every(item => typeof item === 'object') && typeof property === 'string') {
 		return array.findIndex(item => item[property] === value);
 	} else {
-		throw new TypeError('Parameter values must be of type \'Array.<Object>, string, any\' for function \'getIndexObjectInArray(array, property, value)\'');
+		throw new TypeError('Parameter values must be of type "Array.<Object>, string, any" for function "getIndexObjectInArray(array, property, value)"');
 	}
 }
 
@@ -188,7 +188,7 @@ function checkStatusCode(statusCode) {
  * @param {string} contentType - type of the response body
  */
 function checkContentType(contentType) {
-	it('should be of type \'' + contentType + '\'', () => {
+	it('should be of type "' + contentType + '"', () => {
 		response.type.should.equal(contentType);
 	});
 }
@@ -216,7 +216,7 @@ function checkJSONSchema(jsonSchema) {
  * @param {string} location - location of the source
  */
 function checkLocation(location) {
-	it('should return the location \'' + location + '\'', () => {
+	it('should return the location "' + location + '"', () => {
 		response.should.have.header('Location', location);
 	});
 }
@@ -242,9 +242,10 @@ function getRegexISODateTime() {
 /**
  * Gets the JSON schema for HAL. The schema does not check specific resource content but only the basic HAL structure.
  *
+ * @param {Object} schemaResourceItems - schema of the resource items
  * @returns {Object} JSON schema object for HAL
  */
-function getSchemaHAL() {
+function getSchemaHAL(schemaResourceItems = {}) {
 	return {
 		"type": "object",
 		"required": [ "_links", "_embedded", "_page" ],
@@ -294,7 +295,10 @@ function getSchemaHAL() {
 				"type": "object",
 				"required": [ "resourceList" ],
 				"properties": {
-					"resourceList": { "type": "array" }
+					"resourceList": {
+						"type": "array",
+						"items": schemaResourceItems
+					}
 				}
 			},
 			"_page": {
