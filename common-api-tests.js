@@ -240,6 +240,15 @@ function getRegexISODateTime() {
 }
 
 /**
+ * Gets the regex pattern for URL's
+ *
+ * @returns {string} regex pattern string for URL's
+ */
+function getRegexURL() {
+	return "^https?:\/\/[0-9a-zA-Z-]+\.[0-9a-zA-Z-]+";
+}
+
+/**
  * Gets the JSON schema for HAL. The schema does not check specific resource content but only the basic HAL structure.
  *
  * @param {Object} schemaResourceItems - schema of the resource items
@@ -258,35 +267,35 @@ function getSchemaHAL(schemaResourceItems = {}) {
 						"type": "object",
 						"required": [ "href" ],
 						"properties": {
-							"href": { "type": "string", "minLength": 1 }
+							"href": { "type": "string", "pattern": getRegexURL() }
 						}
 					},
 					"next": {
 						"type": [ "object", "null" ],
 						"required": [ "href" ],
 						"properties": {
-							"href": { "type": "string", "minLength": 1 }
+							"href": { "type": "string", "pattern": getRegexURL() }
 						}
 					},
 					"previous": {
 						"type": [ "object", "null" ],
 						"required": [ "href" ],
 						"properties": {
-							"href": { "type": "string", "minLength": 1 }
+							"href": { "type": "string", "pattern": getRegexURL() }
 						}
 					},
 					"first": {
 						"type": "object",
 						"required": [ "href" ],
 						"properties": {
-							"href": { "type": "string", "minLength": 1 }
+							"href": { "type": "string", "pattern": getRegexURL() }
 						}
 					},
 					"last": {
 						"type": "object",
 						"required": [ "href" ],
 						"properties": {
-							"href": { "type": "string", "minLength": 1 }
+							"href": { "type": "string", "pattern": getRegexURL() }
 						}
 					}
 				}
@@ -303,12 +312,12 @@ function getSchemaHAL(schemaResourceItems = {}) {
 			},
 			"_page": {
 				"type": "object",
-				"required": [ "size", "totalElements", "totalPages", "number" ],
+				"required": [ "size", "number" ],
 				"properties": {
-					"size": { "type": "number" },
-					"totalElements": { "type": "number" },
-					"totalPages": { "type": "number" },
-					"number": { "type": "number" }
+					"size": { "type": "number", "minimum": 0, "multipleOf": 1 },
+					"totalElements": { "type": "number", "minimum": 0, "multipleOf": 1 },
+					"totalPages": { "type": "number", "minimum": 0, "multipleOf": 1 },
+					"number": { "type": "number", "minimum": 0, "multipleOf": 1 }
 				}
 			}
 		}
