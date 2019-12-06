@@ -245,7 +245,7 @@ function getRegexISODateTime() {
  * @returns {string} regex pattern string for URL's
  */
 function getRegexURL() {
-	return "^https?://[0-9a-zA-Z-]+\\.[0-9a-zA-Z-]+";
+	return "^https?://[0-9a-zA-Z-]+\\.?[0-9a-zA-Z-]+";
 }
 
 /**
