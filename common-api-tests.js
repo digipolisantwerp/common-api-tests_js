@@ -130,6 +130,7 @@ function getIndexObjectInArray(array, property, value) {
  * Checks if the service responds within the required response time.
  *
  * @param {number} time - elapsed time of the response
+ * @throws {RangeError} Parameter must be a strictly positive number
  */
 function checkTime(time) {
 	if (time > 0) {
@@ -137,9 +138,7 @@ function checkTime(time) {
 			response.time.should.be.below(time);
 		});
 	} else {
-		it('should be tested against a strictly positive time interval', () => {
-			expect(false).to.be.true;
-		});
+		throw new RangeError('Parameter value must be a strictly positive number for function "checkTime(time)"');
 	}
 }
 
@@ -147,6 +146,7 @@ function checkTime(time) {
  * Checks if the service responds with the correct status.
  *
  * @param {number} statusCode - code of the response status
+ * @throws {RangeError} Parameter must be an existing status code number
  */
 function checkStatusCode(statusCode) {
 	switch (true) {
@@ -176,9 +176,7 @@ function checkStatusCode(statusCode) {
 			});
 			break;
 		default:
-			it('should be tested against an existing status code', () => {
-				expect(false).to.be.true;
-			});
+			throw new RangeError('Parameter value must be an existing status code number for function "checkStatusCode(statusCode)"');
 	}
 }
 
@@ -197,6 +195,7 @@ function checkContentType(contentType) {
  * Checks if the response body is structured conform the defined JSON schema.
  *
  * @param {Object} jsonSchema - JSON schema of the response body
+ * @throws {TypeError} Parameter must be a JSON schema object
  */
 function checkJSONSchema(jsonSchema) {
 	if (typeof jsonSchema == 'object') {
@@ -204,9 +203,7 @@ function checkJSONSchema(jsonSchema) {
 			response.body.should.have.schema(jsonSchema);
 		});
 	} else {
-		it('should be tested against a JSON schema object', () => {
-			expect(false).to.be.true;
-		});
+		throw new TypeError('Parameter value must be a JSON schema object for function "checkJSONSchema(jsonSchema)"');
 	}
 }
 
