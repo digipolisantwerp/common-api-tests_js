@@ -130,15 +130,20 @@ function getIndexObjectInArray(array, property, value) {
  * Checks if the service responds within the required response time.
  *
  * @param {number} time - elapsed time of the response
+ * @throws {TypeError} Parameter must be a number
  * @throws {RangeError} Parameter must be a strictly positive number
  */
 function checkTime(time) {
-	if (time > 0) {
-		it('should respond within ' + convertTime(time), () => {
-			response.time.should.be.below(time);
-		});
+	if (typeof time === 'number') {
+		if (time > 0) {
+			it('should respond within ' + convertTime(time), () => {
+				response.time.should.be.below(time);
+			});
+		} else {
+			throw new RangeError('Parameter value must be a strictly positive number for function "checkTime(time)"');
+		}
 	} else {
-		throw new RangeError('Parameter value must be a strictly positive number for function "checkTime(time)"');
+		throw new TypeError('Parameter value must be a number for function "checkTime(time)"');
 	}
 }
 
@@ -146,37 +151,42 @@ function checkTime(time) {
  * Checks if the service responds with the correct status.
  *
  * @param {number} statusCode - code of the response status
+ * @throws {TypeError} Parameter must be a number
  * @throws {RangeError} Parameter must be an existing status code number
  */
 function checkStatusCode(statusCode) {
-	switch (true) {
-		case (100 <= statusCode && statusCode <= 199):
-			it('should be an information response', () => {
-				response.should.have.status(statusCode);
-			});
-			break;
-		case (200 <= statusCode && statusCode <= 299):
-			it('should be a successful response', () => {
-				response.should.have.status(statusCode);
-			});
-			break;
-		case (300 <= statusCode && statusCode <= 399):
-			it('should be a redirection response', () => {
-				response.should.have.status(statusCode);
-			});
-			break;
-		case (400 <= statusCode && statusCode <= 499):
-			it('should be a client error response', () => {
-				response.should.have.status(statusCode);
-			});
-			break;
-		case (500 <= statusCode && statusCode <= 599):
-			it('should be a server error response', () => {
-				response.should.have.status(statusCode);
-			});
-			break;
-		default:
-			throw new RangeError('Parameter value must be an existing status code number for function "checkStatusCode(statusCode)"');
+	if (typeof statusCode === 'number') {
+		switch (true) {
+			case (100 <= statusCode && statusCode <= 199):
+				it('should be an information response', () => {
+					response.should.have.status(statusCode);
+				});
+				break;
+			case (200 <= statusCode && statusCode <= 299):
+				it('should be a successful response', () => {
+					response.should.have.status(statusCode);
+				});
+				break;
+			case (300 <= statusCode && statusCode <= 399):
+				it('should be a redirection response', () => {
+					response.should.have.status(statusCode);
+				});
+				break;
+			case (400 <= statusCode && statusCode <= 499):
+				it('should be a client error response', () => {
+					response.should.have.status(statusCode);
+				});
+				break;
+			case (500 <= statusCode && statusCode <= 599):
+				it('should be a server error response', () => {
+					response.should.have.status(statusCode);
+				});
+				break;
+			default:
+				throw new RangeError('Parameter value must be an existing status code number for function "checkStatusCode(statusCode)"');
+		}
+	} else {
+		throw new TypeError('Parameter value must be a number for function "checkStatusCode(statusCode)"');
 	}
 }
 
@@ -184,11 +194,16 @@ function checkStatusCode(statusCode) {
  * Checks if the service responds with the correct content type.
  *
  * @param {string} contentType - type of the response body
+ * @throws {TypeError} Parameter must be a string
  */
 function checkContentType(contentType) {
-	it('should be of type "' + contentType + '"', () => {
-		response.type.should.equal(contentType);
-	});
+	if (typeof contentType === 'string') {
+		it('should be of type "' + contentType + '"', () => {
+			response.type.should.equal(contentType);
+		});
+	} else {
+		throw new TypeError('Parameter value must be a string for function "checkContentType(contentType)"');
+	}
 }
 
 /**
@@ -198,7 +213,7 @@ function checkContentType(contentType) {
  * @throws {TypeError} Parameter must be a JSON schema object
  */
 function checkJSONSchema(jsonSchema) {
-	if (typeof jsonSchema == 'object') {
+	if (typeof jsonSchema === 'object') {
 		it('should match against the JSON schema', () => {
 			response.body.should.have.schema(jsonSchema);
 		});
@@ -211,11 +226,16 @@ function checkJSONSchema(jsonSchema) {
  * Checks if the service responds with the correct location.
  *
  * @param {string} location - location of the source
+ * @throws {TypeError} Parameter must be a string
  */
 function checkLocation(location) {
-	it('should return the location "' + location + '"', () => {
-		response.should.have.header('Location', location);
-	});
+	if (typeof location === 'string') {
+		it('should return the location "' + location + '"', () => {
+			response.should.have.header('Location', location);
+		});
+	} else {
+		throw new TypeError('Parameter value must be a string for function "checkLocation(location)"');
+	}
 }
 
 /**
@@ -242,7 +262,7 @@ function getRegexISODateTime() {
  * @returns {string} regex pattern string for URL's
  */
 function getRegexURL() {
-	return "^https?://[0-9a-zA-Z-]+\\.?[0-9a-zA-Z-]+";
+	return "^https?://[0-9a-zA-Z-]+\\.[0-9a-zA-Z-]+|https?://localhost";
 }
 
 /**
