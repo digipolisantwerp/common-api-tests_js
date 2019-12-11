@@ -44,6 +44,7 @@ function logResponseBody() {
  * Gets the type of the provided value.
  *
  * @param {*} value - any possible value
+ * @returns {string} Type of the value: Object, Boolean, Number, String, Array, Date, Null, Undefined, Error, ...
  */
 function getType(value) {
 	return Object.prototype.toString.call(value).replace(/^\[object |\]$/g, '');
@@ -53,6 +54,7 @@ function getType(value) {
  * Converts time to the correct multiple.
  *
  * @param {number} time - time in milliseconds
+ * @returns {string} Converted time
  * @throws {TypeError} Parameter must be a number
  */
 function convertTime(time) {
