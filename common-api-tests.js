@@ -41,13 +41,24 @@ function logResponseBody() {
 }
 
 /**
+ * Gets the type of the provided value.
+ *
+ * @param {*} value - any possible value
+ * @returns {string} Type of the value: Object, Boolean, Number, String, Array, Date, Null, Undefined, Error, ...
+ */
+function getType(value) {
+	return Object.prototype.toString.call(value).replace(/^\[object |\]$/g, '');
+}
+
+/**
  * Converts time to the correct multiple.
  *
  * @param {number} time - time in milliseconds
+ * @returns {string} Converted time
  * @throws {TypeError} Parameter must be a number
  */
 function convertTime(time) {
-	if (typeof time === 'number') {
+	if (getType(time) === 'Number') {
 		return time >= 1000 ? time/1000 + 's' : time + 'ms';
 	} else {
 		throw new TypeError('Parameter value must be of type "number" for function "convertTime(time)"');
@@ -61,7 +72,7 @@ function convertTime(time) {
  * @throws {TypeError} Parameter must be a number
  */
 function delayTime(time) {
-	if (typeof time === 'number') {
+	if (getType(time) === 'Number') {
 		console.log('Delaying for ' + convertTime(time) + '...');
 		setTimeout(() => console.log('Delay finished'), time);
 	} else {
@@ -78,7 +89,7 @@ function delayTime(time) {
  * @throws {TypeError} Parameters must be numbers
  */
 function generateNumber(min, max) {
-	if (typeof min === 'number' && typeof max === 'number') {
+	if (getType(min) === 'Number' && getType(max) === 'Number') {
 		if (min <= max) {
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		} else {
@@ -97,7 +108,7 @@ function generateNumber(min, max) {
  * @throws {TypeError} Parameter must be a number
  */
 function generateString(length) {
-	if (typeof length === 'number') {
+	if (getType(length) === 'Number') {
 		var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
 			text = '';
 		for (var i = 0; i < length; i++) {
@@ -119,7 +130,7 @@ function generateString(length) {
  * @throws {TypeError} Parameters must be an array, string, any
  */
 function getIndexObjectInArray(array, property, value) {
-	if (Array.isArray(array) && array.every(item => typeof item === 'object') && typeof property === 'string') {
+	if (Array.isArray(array) && array.every(item => getType(item) === 'Object') && getType(property) === 'String') {
 		return array.findIndex(item => item[property] === value);
 	} else {
 		throw new TypeError('Parameter values must be of type "Array.<Object>, string, any" for function "getIndexObjectInArray(array, property, value)"');
@@ -134,7 +145,7 @@ function getIndexObjectInArray(array, property, value) {
  * @throws {RangeError} Parameter must be a strictly positive number
  */
 function checkTime(time) {
-	if (typeof time === 'number') {
+	if (getType(time) === 'Number') {
 		if (time > 0) {
 			it('should respond within ' + convertTime(time), () => {
 				response.time.should.be.below(time);
@@ -155,7 +166,7 @@ function checkTime(time) {
  * @throws {RangeError} Parameter must be an existing status code number
  */
 function checkStatusCode(statusCode) {
-	if (typeof statusCode === 'number') {
+	if (getType(statusCode) === 'Number') {
 		switch (true) {
 			case (100 <= statusCode && statusCode <= 199):
 				it('should be an information response', () => {
@@ -197,7 +208,7 @@ function checkStatusCode(statusCode) {
  * @throws {TypeError} Parameter must be a string
  */
 function checkContentType(contentType) {
-	if (typeof contentType === 'string') {
+	if (getType(contentType) === 'String') {
 		it('should be of type "' + contentType + '"', () => {
 			response.type.should.equal(contentType);
 		});
@@ -210,15 +221,15 @@ function checkContentType(contentType) {
  * Checks if the response body is structured conform the defined JSON schema.
  *
  * @param {Object} jsonSchema - JSON schema of the response body
- * @throws {TypeError} Parameter must be a JSON schema object
+ * @throws {TypeError} Parameter must be an object
  */
 function checkJSONSchema(jsonSchema) {
-	if (typeof jsonSchema === 'object') {
+	if (getType(jsonSchema) === 'Object') {
 		it('should match against the JSON schema', () => {
 			response.body.should.have.schema(jsonSchema);
 		});
 	} else {
-		throw new TypeError('Parameter value must be a JSON schema object for function "checkJSONSchema(jsonSchema)"');
+		throw new TypeError('Parameter value must be an object for function "checkJSONSchema(jsonSchema)"');
 	}
 }
 
@@ -229,7 +240,7 @@ function checkJSONSchema(jsonSchema) {
  * @throws {TypeError} Parameter must be a string
  */
 function checkLocation(location) {
-	if (typeof location === 'string') {
+	if (getType(location) === 'String') {
 		it('should return the location "' + location + '"', () => {
 			response.should.have.header('Location', location);
 		});
@@ -268,75 +279,80 @@ function getRegexURL() {
 /**
  * Gets the JSON schema for HAL. The schema does not check specific resource content but only the basic HAL structure.
  *
- * @param {Object} schemaResourceItems - schema of the resource items
+ * @param {Object} schemaResourceItems - schema of the resource items (optional)
  * @returns {Object} JSON schema object for HAL
+ * @throws {TypeError} Parameter must be an object
  */
 function getSchemaHAL(schemaResourceItems = {}) {
-	return {
-		"type": "object",
-		"required": [ "_links", "_embedded", "_page" ],
-		"properties": {
-			"_links": {
-				"type": "object",
-				"required": [ "self", "next", "previous", "first", "last" ],
-				"properties": {
-					"self": {
-						"type": "object",
-						"required": [ "href" ],
-						"properties": {
-							"href": { "type": "string", "pattern": getRegexURL() }
-						}
-					},
-					"next": {
-						"type": [ "object", "null" ],
-						"required": [ "href" ],
-						"properties": {
-							"href": { "type": "string", "pattern": getRegexURL() }
-						}
-					},
-					"previous": {
-						"type": [ "object", "null" ],
-						"required": [ "href" ],
-						"properties": {
-							"href": { "type": "string", "pattern": getRegexURL() }
-						}
-					},
-					"first": {
-						"type": "object",
-						"required": [ "href" ],
-						"properties": {
-							"href": { "type": "string", "pattern": getRegexURL() }
-						}
-					},
-					"last": {
-						"type": "object",
-						"required": [ "href" ],
-						"properties": {
-							"href": { "type": "string", "pattern": getRegexURL() }
+	if (getType(schemaResourceItems) === 'Object') {
+		return {
+			"type": "object",
+			"required": [ "_links", "_embedded", "_page" ],
+			"properties": {
+				"_links": {
+					"type": "object",
+					"required": [ "self", "next", "previous", "first", "last" ],
+					"properties": {
+						"self": {
+							"type": "object",
+							"required": [ "href" ],
+							"properties": {
+								"href": { "type": "string", "pattern": getRegexURL() }
+							}
+						},
+						"next": {
+							"type": [ "object", "null" ],
+							"required": [ "href" ],
+							"properties": {
+								"href": { "type": "string", "pattern": getRegexURL() }
+							}
+						},
+						"previous": {
+							"type": [ "object", "null" ],
+							"required": [ "href" ],
+							"properties": {
+								"href": { "type": "string", "pattern": getRegexURL() }
+							}
+						},
+						"first": {
+							"type": "object",
+							"required": [ "href" ],
+							"properties": {
+								"href": { "type": "string", "pattern": getRegexURL() }
+							}
+						},
+						"last": {
+							"type": "object",
+							"required": [ "href" ],
+							"properties": {
+								"href": { "type": "string", "pattern": getRegexURL() }
+							}
 						}
 					}
-				}
-			},
-			"_embedded": {
-				"type": "object",
-				"required": [ "resourceList" ],
-				"properties": {
-					"resourceList": {
-						"type": "array",
-						"items": schemaResourceItems
+				},
+				"_embedded": {
+					"type": "object",
+					"required": [ "resourceList" ],
+					"properties": {
+						"resourceList": {
+							"type": "array",
+							"items": schemaResourceItems
+						}
 					}
-				}
-			},
-			"_page": {
-				"type": "object",
-				"required": [ "size", "number" ],
-				"properties": {
-					"size": { "type": "number", "minimum": 0, "multipleOf": 1 },
-					"totalElements": { "type": "number", "minimum": 0, "multipleOf": 1 },
-					"totalPages": { "type": "number", "minimum": 0, "multipleOf": 1 },
-					"number": { "type": "number", "minimum": 0, "multipleOf": 1 }
+				},
+				"_page": {
+					"type": "object",
+					"required": [ "size", "number" ],
+					"properties": {
+						"size": { "type": "number", "minimum": 0, "multipleOf": 1 },
+						"totalElements": { "type": "number", "minimum": 0, "multipleOf": 1 },
+						"totalPages": { "type": "number", "minimum": 0, "multipleOf": 1 },
+						"number": { "type": "number", "minimum": 0, "multipleOf": 1 }
+					}
 				}
 			}
-		}
-	};
+		};
+	} else {
+		throw new TypeError('Parameter value must be an object for function "getSchemaHAL(schemaResourceItems)"');
+	}
 }
