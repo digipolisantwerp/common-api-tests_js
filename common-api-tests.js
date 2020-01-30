@@ -291,7 +291,7 @@ function getSchemaHAL(schemaResourceItems = {}) {
 			"properties": {
 				"_links": {
 					"type": "object",
-					"required": [ "self", "next", "previous", "first", "last" ],
+					"required": [ "self", "first", "last" ],
 					"properties": {
 						"self": {
 							"type": "object",
