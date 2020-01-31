@@ -250,7 +250,7 @@ function checkLocation(location) {
 }
 
 /**
- * Gets the regex pattern for GUID's
+ * Gets the regex pattern for GUID's.
  *
  * @returns {string} regex pattern string for GUID's
  */
@@ -259,7 +259,7 @@ function getRegexGUID() {
 }
 
 /**
- * Gets the regex pattern for ISO datetimes
+ * Gets the regex pattern for ISO datetimes.
  *
  * @returns {string} regex pattern string for ISO datetimes
  */
@@ -268,7 +268,7 @@ function getRegexISODateTime() {
 }
 
 /**
- * Gets the regex pattern for URL's
+ * Gets the regex pattern for URL's.
  *
  * @returns {string} regex pattern string for URL's
  */
@@ -277,7 +277,7 @@ function getRegexURL() {
 }
 
 /**
- * Gets the JSON schema for HAL. The schema does not check specific resource content but only the basic HAL structure.
+ * Gets the JSON schema for HAL.
  *
  * @param {Object} schemaResourceItems - schema of the resource items (optional)
  * @returns {Object} JSON schema object for HAL
