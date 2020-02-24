@@ -37,7 +37,7 @@ function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) 
  */
 function logResponseBody() {
 	// The 'it' function is being used because a console log results in an unreadable small vertical text. This method will count as an extra test.
-	responseBody && it('response body: ' + responseBody, () => {});
+	pm.response.text() && pm.test("Response Body: " + pm.response.text(), () => {});
 }
 
 /**
@@ -147,8 +147,8 @@ function getIndexObjectInArray(array, property, value) {
 function checkTime(time) {
 	if (getType(time) === 'Number') {
 		if (time > 0) {
-			it('should respond within ' + convertTime(time), () => {
-				response.time.should.be.below(time);
+			pm.test("Response Time < " + convertTime(time), () => {
+				pm.expect(pm.response.responseTime).to.be.below(time);
 			});
 		} else {
 			throw new RangeError('Parameter value must be a strictly positive number for function "checkTime(time)"');
@@ -169,28 +169,28 @@ function checkStatusCode(statusCode) {
 	if (getType(statusCode) === 'Number') {
 		switch (true) {
 			case (100 <= statusCode && statusCode <= 199):
-				it('should be an information response', () => {
-					response.should.have.status(statusCode);
+				pm.test('Status Code (Information)', () => {
+					pm.response.to.have.status(statusCode);
 				});
 				break;
 			case (200 <= statusCode && statusCode <= 299):
-				it('should be a successful response', () => {
-					response.should.have.status(statusCode);
+				pm.test('Status Code (Success)', () => {
+					pm.response.to.have.status(statusCode);
 				});
 				break;
 			case (300 <= statusCode && statusCode <= 399):
-				it('should be a redirection response', () => {
-					response.should.have.status(statusCode);
+				pm.test('Status Code (Redirection)', () => {
+					pm.response.to.have.status(statusCode);
 				});
 				break;
 			case (400 <= statusCode && statusCode <= 499):
-				it('should be a client error response', () => {
-					response.should.have.status(statusCode);
+				pm.test('Status Code (Client Error)', () => {
+					pm.response.to.have.status(statusCode);
 				});
 				break;
 			case (500 <= statusCode && statusCode <= 599):
-				it('should be a server error response', () => {
-					response.should.have.status(statusCode);
+				pm.test('Status Code (Server Error)', () => {
+					pm.response.to.have.status(statusCode);
 				});
 				break;
 			default:
@@ -209,8 +209,8 @@ function checkStatusCode(statusCode) {
  */
 function checkContentType(contentType) {
 	if (getType(contentType) === 'String') {
-		it('should be of type "' + contentType + '"', () => {
-			response.type.should.equal(contentType);
+		pm.test('Content Type', () => {
+			pm.expect(pm.response.headers.get("content-type")).to.include(contentType);
 		});
 	} else {
 		throw new TypeError('Parameter value must be a string for function "checkContentType(contentType)"');
@@ -225,9 +225,9 @@ function checkContentType(contentType) {
  */
 function checkJSONSchema(jsonSchema) {
 	if (getType(jsonSchema) === 'Object') {
-		it('should match against the JSON schema', () => {
-			response.body.should.have.schema(jsonSchema);
-		});
+		var valid = tv4.validate(pm.response.json(), jsonSchema),
+			descriptionJsonSchema = valid ? "JSON Schema" : "JSON Schema (" + tv4.error.message + " for data path " + (tv4.error.dataPath ? tv4.error.dataPath : "/") + ")";
+		pm.test(descriptionJsonSchema, () => pm.expect(valid).to.be.true);
 	} else {
 		throw new TypeError('Parameter value must be an object for function "checkJSONSchema(jsonSchema)"');
 	}
@@ -241,8 +241,8 @@ function checkJSONSchema(jsonSchema) {
  */
 function checkLocation(location) {
 	if (getType(location) === 'String') {
-		it('should return the location "' + location + '"', () => {
-			response.should.have.header('Location', location);
+		pm.test('Location', () => {
+			pm.response.to.be.header("location", location);
 		});
 	} else {
 		throw new TypeError('Parameter value must be a string for function "checkLocation(location)"');
