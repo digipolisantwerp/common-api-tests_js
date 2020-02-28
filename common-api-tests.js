@@ -2,13 +2,25 @@
 // For more information about JSON Schema, see https://spacetelescope.github.io/understanding-json-schema/basics.html
 // Negative regex values can be extended by an OR function. Example: (?!wrongvalue1|wrongvalue2|wrongvalueN)
 
+const COMMON = {
+	ERROR: {
+		OFFSET: 3
+	},
+	TYPE_ERROR: {
+		MESSAGE: "Wrong argument type for function"
+	},
+	RANGE_ERROR: {
+		MESSAGE: "Argument out of range for function"
+	}
+};
+
 /**
  * Checks commonly used variables.
  *
- * @param {number} statusCode - status code of the response
- * @param {string} contentType - content type of the response
+ * @param {number} statusCode - Status code of the response
+ * @param {string} contentType - Content type of the response
  * @param {Object} jsonSchema - JSON schema of the response
- * @param {string} location - location of the source
+ * @param {string} location - Location of the source
  */
 function testCommon(statusCode, contentType, jsonSchema, location) {
 	logResponseBody();
@@ -21,11 +33,11 @@ function testCommon(statusCode, contentType, jsonSchema, location) {
 /**
  * Executes functions testCommon and checkTime.
  *
- * @param {number} statusCode - status code of the response
- * @param {number} time - elapsed time of the response
- * @param {string} contentType - content type of the response
+ * @param {number} statusCode - Status code of the response
+ * @param {number} time - Elapsed time of the response
+ * @param {string} contentType - Content type of the response
  * @param {Object} jsonSchema - JSON schema of the response
- * @param {string} location - location of the source
+ * @param {string} location - Location of the source
  */
 function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) {
 	testCommon(statusCode, contentType, jsonSchema, location);
@@ -36,87 +48,36 @@ function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) 
  * Logs the response body of the request. This function is for test automation logging purposes.
  */
 function logResponseBody() {
-	// The 'it' function is being used because a console log results in an unreadable small vertical text. This method will count as an extra test.
-	pm.response.text() && pm.test("Response Body: " + pm.response.text(), () => {});
+	// The "pm.test" function is being used because a console log results in an unreadable small vertical text. This method will count as an extra test.
+	const RESPONSE_BODY = pm.response.text();
+	RESPONSE_BODY && pm.test(`Response Body: ${RESPONSE_BODY}`, () => {});
 }
 
 /**
  * Gets the type of the provided value.
  *
- * @param {*} value - any possible value
+ * @param {*} value - Any possible value
  * @returns {string} Type of the value: Object, Boolean, Number, String, Array, Date, Null, Undefined, Error, ...
  */
 function getType(value) {
-	return Object.prototype.toString.call(value).replace(/^\[object |\]$/g, '');
+	return Object.prototype.toString.call(value).replace(/^\[object |\]$/g, "");
 }
 
 /**
- * Converts time to the correct multiple.
+ * Gets the function name from the function where this is called.
  *
- * @param {number} time - time in milliseconds
- * @returns {string} Converted time
- * @throws {TypeError} Parameter must be a number
+ * @param {Error} error - Example: new Error()
+ * @returns {string} Name of the caller function
+ * @throws {TypeError} Parameter must be an error object
  */
-function convertTime(time) {
-	if (getType(time) === 'Number') {
-		return time >= 1000 ? time/1000 + 's' : time + 'ms';
+function getFunctionNameFromInside(error) {
+	// arguments.callee.name is forbidden in ES5+ strict mode
+	if (getType(error) === "Error") {
+		let functionName = error.stack.split(/\r\n|\r|\n/g)[1].trim();
+		functionName = functionName.substr(COMMON.ERROR.OFFSET, functionName.indexOf("(") - 1 - COMMON.ERROR.OFFSET);
+		return functionName;
 	} else {
-		throw new TypeError('Parameter value must be of type "number" for function "convertTime(time)"');
-	}
-}
-
-/**
- * Delays for the set amount of time.
- *
- * @param {number} time - time interval in milliseconds
- * @throws {TypeError} Parameter must be a number
- */
-function delayTime(time) {
-	if (getType(time) === 'Number') {
-		console.log('Delaying for ' + convertTime(time) + '...');
-		setTimeout(() => console.log('Delay finished'), time);
-	} else {
-		throw new TypeError('Parameter value must be of type "number" for function "delayTime(time)"');
-	}
-}
-
-/**
- * Generates a random number. Positive and negative numbers are allowed.
- *
- * @param {number} min - minimum number (included)
- * @param {number} max - maximum number (included)
- * @returns {number} Random number that ranges from min to max
- * @throws {TypeError} Parameters must be numbers
- */
-function generateNumber(min, max) {
-	if (getType(min) === 'Number' && getType(max) === 'Number') {
-		if (min <= max) {
-			return Math.floor(Math.random() * (max - min + 1) + min);
-		} else {
-			return Math.floor(Math.random() * (min - max + 1) + max);
-		}
-	} else {
-		throw new TypeError('Parameter values must be of type "number" for function "generateNumber(min, max)"');
-	}
-}
-
-/**
- * Generates a random string of characters.
- *
- * @param {number} length - Amount of characters to be generated
- * @returns {string} Text with random characters
- * @throws {TypeError} Parameter must be a number
- */
-function generateString(length) {
-	if (getType(length) === 'Number') {
-		var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
-			text = '';
-		for (var i = 0; i < length; i++) {
-			text += characters.charAt(Math.floor(Math.random() * characters.length));
-		}
-		return text;
-	} else {
-		throw new TypeError('Parameter value must be of type "number" for function "generateString(length)"');
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} getFunctionNameFromInside`);
 	}
 }
 
@@ -130,90 +91,162 @@ function generateString(length) {
  * @throws {TypeError} Parameters must be an array, string, any
  */
 function getIndexObjectInArray(array, property, value) {
-	if (Array.isArray(array) && array.every(item => getType(item) === 'Object') && getType(property) === 'String') {
+	if (Array.isArray(array) && array.every(item => getType(item) === "Object") && getType(property) === "String") {
 		return array.findIndex(item => item[property] === value);
 	} else {
-		throw new TypeError('Parameter values must be of type "Array.<Object>, string, any" for function "getIndexObjectInArray(array, property, value)"');
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
+	}
+}
+
+/**
+ * Converts time to the correct multiple.
+ *
+ * @param {number} time - Time in milliseconds
+ * @returns {string} Converted time
+ * @throws {TypeError} Parameter must be a number
+ */
+function convertTime(time) {
+	if (getType(time) === "Number") {
+		return time >= 1000 ? `${time / 1000}s` : `${time}ms`;
+	} else {
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
+	}
+}
+
+/**
+ * Delays for the set amount of time.
+ *
+ * @param {number} time - Time interval in milliseconds
+ * @throws {TypeError} Parameter must be a number
+ */
+function delayTime(time) {
+	if (getType(time) === "Number") {
+		console.log(`Delaying for ${convertTime(time)}...`);
+		setTimeout(() => console.log("Delay finished"), time);
+	} else {
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
+	}
+}
+
+/**
+ * Generates a random number. Positive and negative numbers are allowed.
+ *
+ * @param {number} min - Minimum number (included)
+ * @param {number} max - Maximum number (included)
+ * @returns {number} Random number that ranges from min to max
+ * @throws {TypeError} Parameters must be numbers
+ * @throws {RangeError} Parameter max must be greater than min
+ */
+function generateNumber(min, max) {
+	if (getType(min) === "Number" && getType(max) === "Number") {
+		if (min <= max) {
+			return Math.floor(Math.random() * (max - min + 1) + min);
+		} else {
+			throw new RangeError(`${COMMON.RANGE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
+		}
+	} else {
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
+	}
+}
+
+/**
+ * Generates a random string of characters.
+ *
+ * @param {number} length - Amount of characters to be generated
+ * @returns {string} Text with random characters
+ * @throws {TypeError} Parameter must be a number
+ */
+function generateString(length) {
+	if (getType(length) === "Number") {
+		const CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		let text = "";
+		for (let i = 0; i < length; i++) {
+			text += CHARACTERS.charAt(Math.floor(Math.random() * CHARACTERS.length));
+		}
+		return text;
+	} else {
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 	}
 }
 
 /**
  * Checks if the service responds within the required response time.
  *
- * @param {number} time - elapsed time of the response
+ * @param {number} time - Elapsed time of the response
  * @throws {TypeError} Parameter must be a number
  * @throws {RangeError} Parameter must be a strictly positive number
  */
 function checkTime(time) {
-	if (getType(time) === 'Number') {
+	if (getType(time) === "Number") {
 		if (time > 0) {
-			pm.test("Response Time < " + convertTime(time), () => {
+			pm.test(`Response Time < ${convertTime(time)}`, () => {
 				pm.expect(pm.response.responseTime).to.be.below(time);
 			});
 		} else {
-			throw new RangeError('Parameter value must be a strictly positive number for function "checkTime(time)"');
+			throw new RangeError(`${COMMON.RANGE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 		}
 	} else {
-		throw new TypeError('Parameter value must be a number for function "checkTime(time)"');
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 	}
 }
 
 /**
  * Checks if the service responds with the correct status.
  *
- * @param {number} statusCode - code of the response status
+ * @param {number} statusCode - Code of the response status
  * @throws {TypeError} Parameter must be a number
  * @throws {RangeError} Parameter must be an existing status code number
  */
 function checkStatusCode(statusCode) {
-	if (getType(statusCode) === 'Number') {
+	if (getType(statusCode) === "Number") {
 		switch (true) {
 			case (100 <= statusCode && statusCode <= 199):
-				pm.test('Status Code (Information)', () => {
+				pm.test("Status Code (Information)", () => {
 					pm.response.to.have.status(statusCode);
 				});
 				break;
 			case (200 <= statusCode && statusCode <= 299):
-				pm.test('Status Code (Success)', () => {
+				pm.test("Status Code (Success)", () => {
 					pm.response.to.have.status(statusCode);
 				});
 				break;
 			case (300 <= statusCode && statusCode <= 399):
-				pm.test('Status Code (Redirection)', () => {
+				pm.test("Status Code (Redirection)", () => {
 					pm.response.to.have.status(statusCode);
 				});
 				break;
 			case (400 <= statusCode && statusCode <= 499):
-				pm.test('Status Code (Client Error)', () => {
+				pm.test("Status Code (Client Error)", () => {
 					pm.response.to.have.status(statusCode);
 				});
 				break;
 			case (500 <= statusCode && statusCode <= 599):
-				pm.test('Status Code (Server Error)', () => {
+				pm.test("Status Code (Server Error)", () => {
 					pm.response.to.have.status(statusCode);
 				});
 				break;
 			default:
-				throw new RangeError('Parameter value must be an existing status code number for function "checkStatusCode(statusCode)"');
+				throw new RangeError(`${COMMON.RANGE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 		}
 	} else {
-		throw new TypeError('Parameter value must be a number for function "checkStatusCode(statusCode)"');
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 	}
 }
 
 /**
  * Checks if the service responds with the correct content type.
  *
- * @param {string} contentType - type of the response body
+ * @param {string} contentType - Type of the response body
  * @throws {TypeError} Parameter must be a string
  */
 function checkContentType(contentType) {
-	if (getType(contentType) === 'String') {
-		pm.test('Content Type', () => {
-			pm.expect(pm.response.headers.get("content-type")).to.include(contentType);
+	if (getType(contentType) === "String") {
+		pm.test("Content Type", () => {
+			pm.response.to.have.header("Content-Type");
+			pm.expect(pm.response.headers.get("Content-Type")).to.include(contentType);
 		});
 	} else {
-		throw new TypeError('Parameter value must be a string for function "checkContentType(contentType)"');
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 	}
 }
 
@@ -224,35 +257,35 @@ function checkContentType(contentType) {
  * @throws {TypeError} Parameter must be an object
  */
 function checkJSONSchema(jsonSchema) {
-	if (getType(jsonSchema) === 'Object') {
-		var valid = tv4.validate(pm.response.json(), jsonSchema),
-			descriptionJsonSchema = valid ? "JSON Schema" : "JSON Schema (" + tv4.error.message + " for data path " + (tv4.error.dataPath ? tv4.error.dataPath : "/") + ")";
-		pm.test(descriptionJsonSchema, () => pm.expect(valid).to.be.true);
+	if (getType(jsonSchema) === "Object") {
+		const VALID = tv4.validate(pm.response.json(), jsonSchema),
+			  DESCRIPTION_JSON_SCHEMA = VALID ? "JSON Schema" : `JSON Schema (${tv4.error.message} for data path ${tv4.error.dataPath ? tv4.error.dataPath : "/"})`;
+		pm.test(DESCRIPTION_JSON_SCHEMA, () => pm.expect(VALID).to.be.true);
 	} else {
-		throw new TypeError('Parameter value must be an object for function "checkJSONSchema(jsonSchema)"');
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 	}
 }
 
 /**
  * Checks if the service responds with the correct location.
  *
- * @param {string} location - location of the source
+ * @param {string} location - Location of the source
  * @throws {TypeError} Parameter must be a string
  */
 function checkLocation(location) {
-	if (getType(location) === 'String') {
-		pm.test('Location', () => {
-			pm.response.to.be.header("location", location);
+	if (getType(location) === "String") {
+		pm.test("Location", () => {
+			pm.response.to.be.header("Location", location);
 		});
 	} else {
-		throw new TypeError('Parameter value must be a string for function "checkLocation(location)"');
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 	}
 }
 
 /**
  * Gets the regex pattern for GUID's.
  *
- * @returns {string} regex pattern string for GUID's
+ * @returns {string} Regex pattern string for GUID's
  */
 function getRegexGUID() {
 	return "^(?!00000000-0000-0000-0000-000000000000)([0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12})$";
@@ -261,7 +294,7 @@ function getRegexGUID() {
 /**
  * Gets the regex pattern for ISO datetimes.
  *
- * @returns {string} regex pattern string for ISO datetimes
+ * @returns {string} Regex pattern string for ISO datetimes
  */
 function getRegexISODateTime() {
 	return "^(?!0001-01-01T00:00:00Z)([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.?[0-9]*Z)$";
@@ -270,7 +303,7 @@ function getRegexISODateTime() {
 /**
  * Gets the regex pattern for URL's.
  *
- * @returns {string} regex pattern string for URL's
+ * @returns {string} Regex pattern string for URL's
  */
 function getRegexURL() {
 	return "^https?://[0-9a-zA-Z-]+\\.[0-9a-zA-Z-]+|https?://localhost";
@@ -279,60 +312,60 @@ function getRegexURL() {
 /**
  * Gets the JSON schema for HAL.
  *
- * @param {Object} schemaResourceItems - schema of the resource items (optional)
+ * @param {Object} schemaResourceItems - Schema of the resource items (optional)
  * @returns {Object} JSON schema object for HAL
  * @throws {TypeError} Parameter must be an object
  */
 function getSchemaHAL(schemaResourceItems = {}) {
-	if (getType(schemaResourceItems) === 'Object') {
+	if (getType(schemaResourceItems) === "Object") {
 		return {
 			"type": "object",
-			"required": [ "_links", "_embedded", "_page" ],
+			"required": ["_links", "_embedded", "_page"],
 			"properties": {
 				"_links": {
 					"type": "object",
-					"required": [ "self", "first", "last" ],
+					"required": ["self", "first", "last"],
 					"properties": {
 						"self": {
 							"type": "object",
-							"required": [ "href" ],
+							"required": ["href"],
 							"properties": {
-								"href": { "type": "string", "pattern": getRegexURL() }
+								"href": {"type": "string", "pattern": getRegexURL()}
 							}
 						},
 						"next": {
-							"type": [ "object", "null" ],
-							"required": [ "href" ],
+							"type": ["object", "null"],
+							"required": ["href"],
 							"properties": {
-								"href": { "type": "string", "pattern": getRegexURL() }
+								"href": {"type": "string", "pattern": getRegexURL()}
 							}
 						},
 						"previous": {
-							"type": [ "object", "null" ],
-							"required": [ "href" ],
+							"type": ["object", "null"],
+							"required": ["href"],
 							"properties": {
-								"href": { "type": "string", "pattern": getRegexURL() }
+								"href": {"type": "string", "pattern": getRegexURL()}
 							}
 						},
 						"first": {
 							"type": "object",
-							"required": [ "href" ],
+							"required": ["href"],
 							"properties": {
-								"href": { "type": "string", "pattern": getRegexURL() }
+								"href": {"type": "string", "pattern": getRegexURL()}
 							}
 						},
 						"last": {
 							"type": "object",
-							"required": [ "href" ],
+							"required": ["href"],
 							"properties": {
-								"href": { "type": "string", "pattern": getRegexURL() }
+								"href": {"type": "string", "pattern": getRegexURL()}
 							}
 						}
 					}
 				},
 				"_embedded": {
 					"type": "object",
-					"required": [ "resourceList" ],
+					"required": ["resourceList"],
 					"properties": {
 						"resourceList": {
 							"type": "array",
@@ -342,17 +375,17 @@ function getSchemaHAL(schemaResourceItems = {}) {
 				},
 				"_page": {
 					"type": "object",
-					"required": [ "size", "number" ],
+					"required": ["size", "number"],
 					"properties": {
-						"size": { "type": "number", "minimum": 0, "multipleOf": 1 },
-						"totalElements": { "type": "number", "minimum": 0, "multipleOf": 1 },
-						"totalPages": { "type": "number", "minimum": 0, "multipleOf": 1 },
-						"number": { "type": "number", "minimum": 0, "multipleOf": 1 }
+						"size": {"type": "number", "minimum": 0, "multipleOf": 1},
+						"totalElements": {"type": "number", "minimum": 0, "multipleOf": 1},
+						"totalPages": {"type": "number", "minimum": 0, "multipleOf": 1},
+						"number": {"type": "number", "minimum": 1, "multipleOf": 1}
 					}
 				}
 			}
 		};
 	} else {
-		throw new TypeError('Parameter value must be an object for function "getSchemaHAL(schemaResourceItems)"');
+		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 	}
 }
