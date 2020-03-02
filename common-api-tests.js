@@ -191,7 +191,7 @@ function checkTime(time) {
 }
 
 /**
- * Checks if the service responds with the correct status.
+ * Checks if the service responds with the correct status. Aborts the test flow if there are infrastructural issues.
  *
  * @param {number} statusCode - Code of the response status
  * @throws {TypeError} Parameter must be a number
@@ -199,12 +199,12 @@ function checkTime(time) {
  */
 function checkStatusCode(statusCode) {
 	if (getType(statusCode) === "Number") {
-		if (pm.response.code != statusCode 
-			&& (pm.response.code === 401 
-				|| pm.response.code === 403 
-				|| pm.response.code === 500 
-				|| pm.response.code === 502 
-				|| pm.response.code === 503 
+		if (pm.response.code != statusCode
+			&& (pm.response.code === 401
+				|| pm.response.code === 403
+				|| pm.response.code === 500
+				|| pm.response.code === 502
+				|| pm.response.code === 503
 				|| pm.response.code === 504)) {
 			postman.setNextRequest(null);
 		}
