@@ -199,6 +199,15 @@ function checkTime(time) {
  */
 function checkStatusCode(statusCode) {
 	if (getType(statusCode) === "Number") {
+		if (pm.response.code != statusCode 
+			&& (pm.response.code === 401 
+				|| pm.response.code === 403 
+				|| pm.response.code === 500 
+				|| pm.response.code === 502 
+				|| pm.response.code === 503 
+				|| pm.response.code === 504)) {
+			postman.setNextRequest(null);
+		}
 		switch (true) {
 			case (100 <= statusCode && statusCode <= 199):
 				pm.test("Status Code (Information)", () => {
