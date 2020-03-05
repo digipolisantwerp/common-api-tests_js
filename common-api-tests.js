@@ -200,27 +200,27 @@ function checkTime(time) {
 function checkStatusCode(statusCode) {
 	if (getType(statusCode) === "Number") {
 		const ERROR_CODES = [503, 500, 502, 504, 401, 403];
-		let DESCRIPTION_STATUS_CODE = "Status Code ";
+		let descriptionStatusCode = "Status Code ";
 		switch (true) {
 			case (100 <= statusCode && statusCode <= 199):
-				DESCRIPTION_STATUS_CODE += "(Information)";
+				descriptionStatusCode += "(Information)";
 				break;
 			case (200 <= statusCode && statusCode <= 299):
-				DESCRIPTION_STATUS_CODE += "(Success)";
+				descriptionStatusCode += "(Success)";
 				break;
 			case (300 <= statusCode && statusCode <= 399):
-				DESCRIPTION_STATUS_CODE += "(Redirection)";
+				descriptionStatusCode += "(Redirection)";
 				break;
 			case (400 <= statusCode && statusCode <= 499):
-				DESCRIPTION_STATUS_CODE += "(Client Error)";
+				descriptionStatusCode += "(Client Error)";
 				break;
 			case (500 <= statusCode && statusCode <= 599):
-				DESCRIPTION_STATUS_CODE += "(Server Error)";
+				descriptionStatusCode += "(Server Error)";
 				break;
 			default:
 				throw new RangeError(`${COMMON.RANGE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 		}
-		pm.test(DESCRIPTION_STATUS_CODE, () => {
+		pm.test(descriptionStatusCode, () => {
 			pm.response.to.have.status(statusCode);
 		});
 		if (pm.response.code != statusCode) {
