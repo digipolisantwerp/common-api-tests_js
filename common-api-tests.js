@@ -199,43 +199,37 @@ function checkTime(time) {
  */
 function checkStatusCode(statusCode) {
 	if (getType(statusCode) === "Number") {
-		if (pm.response.code != statusCode
-			&& (pm.response.code === 401
-				|| pm.response.code === 403
-				|| pm.response.code === 500
-				|| pm.response.code === 502
-				|| pm.response.code === 503
-				|| pm.response.code === 504)) {
-			postman.setNextRequest(null);
-		}
+		const ERROR_CODES = [503, 500, 502, 504, 401, 403];
+		let descriptionStatusCode = "Status Code ";
 		switch (true) {
 			case (100 <= statusCode && statusCode <= 199):
-				pm.test("Status Code (Information)", () => {
-					pm.response.to.have.status(statusCode);
-				});
+				descriptionStatusCode += "(Information)";
 				break;
 			case (200 <= statusCode && statusCode <= 299):
-				pm.test("Status Code (Success)", () => {
-					pm.response.to.have.status(statusCode);
-				});
+				descriptionStatusCode += "(Success)";
 				break;
 			case (300 <= statusCode && statusCode <= 399):
-				pm.test("Status Code (Redirection)", () => {
-					pm.response.to.have.status(statusCode);
-				});
+				descriptionStatusCode += "(Redirection)";
 				break;
 			case (400 <= statusCode && statusCode <= 499):
-				pm.test("Status Code (Client Error)", () => {
-					pm.response.to.have.status(statusCode);
-				});
+				descriptionStatusCode += "(Client Error)";
 				break;
 			case (500 <= statusCode && statusCode <= 599):
-				pm.test("Status Code (Server Error)", () => {
-					pm.response.to.have.status(statusCode);
-				});
+				descriptionStatusCode += "(Server Error)";
 				break;
 			default:
 				throw new RangeError(`${COMMON.RANGE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
+		}
+		pm.test(descriptionStatusCode, () => {
+			pm.response.to.have.status(statusCode);
+		});
+		if (pm.response.code != statusCode) {
+			for (let i = 0; i < ERROR_CODES.length; i++) {
+				if (pm.response.code === ERROR_CODES[i]) {
+					postman.setNextRequest(null);
+					break;
+				}
+			}
 		}
 	} else {
 		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
@@ -269,7 +263,9 @@ function checkJSONSchema(jsonSchema) {
 	if (getType(jsonSchema) === "Object") {
 		const VALID = tv4.validate(pm.response.json(), jsonSchema),
 			  DESCRIPTION_JSON_SCHEMA = VALID ? "JSON Schema" : `JSON Schema (${tv4.error.message} for data path ${tv4.error.dataPath ? tv4.error.dataPath : "/"})`;
-		pm.test(DESCRIPTION_JSON_SCHEMA, () => pm.expect(VALID).to.be.true);
+		pm.test(DESCRIPTION_JSON_SCHEMA, () => {
+			pm.expect(VALID).to.be.true;
+		});
 	} else {
 		throw new TypeError(`${COMMON.TYPE_ERROR.MESSAGE} ${getFunctionNameFromInside(new Error())}`);
 	}
