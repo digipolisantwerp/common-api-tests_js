@@ -15,7 +15,7 @@ Importing the Common API testscripts file is similar to installing Postman BDD.
 
 **1. Download the Common API tests**
 Create a `GET` request in Postman and point it to the following URL:<br>
-[`https://raw.githubusercontent.com/digipolisantwerp/common-api-tests_js/master/common-tests.js`](https://raw.githubusercontent.com/digipolisantwerp/common-api-tests_js/master/common-tests.js)
+[`https://raw.githubusercontent.com/digipolisantwerp/common-api-tests_js/master/common-api-tests.min.js`](https://raw.githubusercontent.com/digipolisantwerp/common-api-tests_js/master/common-api-tests.min.js)
 
 **2. Install Postman BDD**
 In the same request that you created in Step 1, go to the "Tests" tab and add the following script:
@@ -34,7 +34,8 @@ postman.setGlobalVariable('commonTests', responseBody);
 | `Status code: integer;` | - | The status code that should be returned in the response. |
 | `Content-Type: string;` | - | The Content-Type that should be returned in the response. |
 | `Response time: integer;` | - | The maximum response time in milliseconds. |
-| `Json scheme: object;` | - | The jsonScheme that should be returned in the response. |
+| `JsonSchema: object;` | - | The jsonSchema that should be returned in the response. |
+| `Location: string;` | - | The location that should be returned in the response header. |
 
 ### Example
 
@@ -42,15 +43,38 @@ postman.setGlobalVariable('commonTests', responseBody);
 // "import" Global variable commonTests in your testscript
 eval(globals.commonTests);
 
-// "add" the common test to your testscript
-describe('GET ' + environment.url + '/testapi', () => {
-  //commontest without scheme
-  commonTest(200, "application/json; charset=utf-8", 500);
-  //commontest with json scheme
-  commonTestWithScheme(200, "application/json; charset=utf-8", 500, jsonscheme);
-  // "add" the rest of your testscript
-  ...
+// set element to environment variable
+try{
+    if (responseCode.code === 201) {
+        pm.environment.set("variableName", pm.response.json().id);
+    }
+}catch(error){
+    console.log(error);
 }
+
+// define jsonschema
+var jsonschema = {
+    type:'array',
+    items:{
+        type:'object',
+        required:['endpoint','parameter','alarm','type','config','status','id'],
+        properties:{
+            endpoint:{type:'string'},
+            parameter:{type:'boolean'},
+            alarm:{type:'boolean'},
+            type:{type:'string'},
+            config:{type:'boolean'},
+            status:{type:'boolean'},
+            id:{type:'number'},
+        }
+    }
+};
+
+// "add" the common test to your testscript
+// commontest without time
+  testCommon(200, "application/json", jsonschema);
+// commontest with time
+  testCommonAndTime(200, 500, "application/json", jsonschema);
 ```
 
 ## Questions
