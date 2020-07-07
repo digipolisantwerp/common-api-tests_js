@@ -21,7 +21,7 @@ Create a `GET` request in Postman and point it to the following URL:<br>
 In the same request that you created in Step 1, go to the "Tests" tab and add the following script:
 
 ```javascript
-// "install" Postman BDD
+// set response body to global variable 'commonTests'.
 postman.setGlobalVariable('commonTests', responseBody);
 ```
 
@@ -40,7 +40,7 @@ postman.setGlobalVariable('commonTests', responseBody);
 ### Example
 
 ```javascript
-// "import" Global variable commonTests in your testscript
+// "import" Global variable 'commonTests' in your testscript
 eval(globals.commonTests);
 
 // set element to environment variable
@@ -71,9 +71,9 @@ var jsonschema = {
 };
 
 // "add" the common test to your testscript
-// commontest without time
+// commontest without check on response time.
   testCommon(200, "application/json", jsonschema);
-// commontest with time
+// commontest with check on response time.
   testCommonAndTime(200, 500, "application/json", jsonschema);
 ```
 
