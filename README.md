@@ -89,6 +89,10 @@ Detailed changes for each release are documented in the [changelog](./CHANGELOG.
 
 Your contributions are most welcome as pull requests, both code changes and documentation updates.
 
+## Support
+
+Lieven Van Gestel (<lieven.vangestel@digipolis.be>)
+
 ## License
 
 [MIT](./LICENSE)
