@@ -25,9 +25,11 @@ const COMMON = {
 function testCommon(statusCode, contentType, jsonSchema, location) {
 	logResponseBody();
 	statusCode && checkStatusCode(statusCode);
-	contentType && checkContentType(contentType);
-	jsonSchema && checkJSONSchema(jsonSchema);
-	location && checkLocation(location);
+	if (pm.response.code === statusCode) {
+	  	contentType && checkContentType(contentType);
+	  	jsonSchema && checkJSONSchema(jsonSchema);
+	  	location && checkLocation(location);
+  	}
 }
 
 /**
@@ -41,7 +43,9 @@ function testCommon(statusCode, contentType, jsonSchema, location) {
  */
 function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) {
 	testCommon(statusCode, contentType, jsonSchema, location);
-	time && checkTime(time);
+	if (pm.response.code === statusCode) {
+		time && checkTime(time);
+	}
 }
 
 /**
