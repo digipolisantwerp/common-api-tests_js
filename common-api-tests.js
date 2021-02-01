@@ -11,6 +11,9 @@ const COMMON = {
 	},
 	RANGE_ERROR: {
 		MESSAGE: "Argument out of range for function"
+	},
+	SCRIPT_INTERRUPTED: {
+		MESSAGE: "FAILED: Script interrupted due to a server error or an auth error"
 	}
 };
 
@@ -231,6 +234,7 @@ function checkStatusCode(statusCode) {
 			for (let i = 0; i < ERROR_CODES.length; i++) {
 				if (pm.response.code === ERROR_CODES[i]) {
 					postman.setNextRequest(null);
+					console.log(COMMON.SCRIPT_INTERRUPTED.MESSAGE);
 					break;
 				}
 			}
