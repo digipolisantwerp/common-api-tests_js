@@ -45,9 +45,28 @@ function testCommon(statusCode, contentType, jsonSchema, location) {
  * @param {string} location - Location of the source
  */
 function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) {
-	testCommon(statusCode, contentType, jsonSchema, location);
-	if (pm.response.code === statusCode) {
-		time && checkTime(time);
+	
+	// get environment variable for testType, if not set, use value "ALL"
+	let testType = pm.environment.get("testType");
+	if (!testType) {
+		testType = "ALL";
+	}
+	// if "ALL", all tests should be run as usual
+	if (testType === "ALL") {
+		testCommon(statusCode, contentType, jsonSchema, location);
+		if (pm.response.code === statusCode) {
+			time && checkTime(time);
+		}
+	}
+	// if "COMMON", only common tests 
+	else if (testType === "COMMON") {
+		testCommon(statusCode, contentType, jsonSchema, location);
+	}
+    // if "TIME", only time tests 		
+	else if (testType === "TIME") {
+		if (pm.response.code === statusCode) {
+			time && checkTime(time);
+		}
 	}
 }
 
