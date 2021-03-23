@@ -53,7 +53,7 @@ function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) 
 		case "COMMON": // if testType = "COMMON", only check common
 			testCommon(statusCode, contentType, jsonSchema, location);
 			break;
-        case "TIME": // if testType = "TIME", only check time
+		case "TIME": // if testType = "TIME", only check time
 			if (pm.response.code === statusCode) {
 				time && checkTime(time);
 			}
