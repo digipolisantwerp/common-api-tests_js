@@ -50,13 +50,15 @@ function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) 
 	const TEST_TYPE = pm.environment.get("testType") || "ALL"
 
 	switch (TEST_TYPE) {
-		case "COMMON": // if testType = "COMMON", only common checks
+		case "COMMON": // if testType = "COMMON", only check common
 			testCommon(statusCode, contentType, jsonSchema, location);
 			break;
-        case "TIME": // if testType = "TIME", only time checks
-			testCommon(statusCode, contentType, jsonSchema, location);
+        case "TIME": // if testType = "TIME", only check time
+			if (pm.response.code === statusCode) {
+				time && checkTime(time);
+			}
 			break;
-		default: // other: both common and time checks
+		default: // other: check both common and time
 			testCommon(statusCode, contentType, jsonSchema, location);
 			if (pm.response.code === statusCode) {
 				time && checkTime(time);
