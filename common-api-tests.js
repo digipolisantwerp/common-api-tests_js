@@ -57,7 +57,16 @@ function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) 
 function logResponseBody() {
 	// The "pm.test" function is being used because a console log results in an unreadable small vertical text. This method will count as an extra test.
 	const RESPONSE_BODY = pm.response.text();
-	RESPONSE_BODY && pm.test(`Response Body: ${RESPONSE_BODY}`, () => {});
+	if (RESPONSE_BODY && !/^504|401|403$/.test(pm.response.code)) {
+		try {
+			JSON.parse(RESPONSE_BODY);
+			pm.test(`Response Body: ${RESPONSE_BODY}`, () => {});
+		} catch (error) {
+			console.log("Response body is not valid JSON");
+		}
+	} else {
+		pm.test(`Response Body: ${RESPONSE_BODY}`, () => {});
+	}
 }
 
 /**
