@@ -11,6 +11,9 @@ const COMMON = {
 	},
 	RANGE_ERROR: {
 		MESSAGE: "Argument out of range for function"
+	},
+	SCRIPT_INTERRUPTED: {
+		MESSAGE: "FAILED: Script interrupted due to a server error or an auth error"
 	}
 };
 
@@ -25,9 +28,11 @@ const COMMON = {
 function testCommon(statusCode, contentType, jsonSchema, location) {
 	logResponseBody();
 	statusCode && checkStatusCode(statusCode);
-	contentType && checkContentType(contentType);
-	jsonSchema && checkJSONSchema(jsonSchema);
-	location && checkLocation(location);
+	if (pm.response.code === statusCode) {
+	  	contentType && checkContentType(contentType);
+	  	jsonSchema && checkJSONSchema(jsonSchema);
+	  	location && checkLocation(location);
+  	}
 }
 
 /**
@@ -40,8 +45,25 @@ function testCommon(statusCode, contentType, jsonSchema, location) {
  * @param {string} location - Location of the source
  */
 function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) {
-	testCommon(statusCode, contentType, jsonSchema, location);
-	time && checkTime(time);
+	
+	// get environment variable for testType, if not set, use value "ALL"
+	const TEST_TYPE = pm.environment.get("testType") || "ALL"
+
+	switch (TEST_TYPE) {
+		case "COMMON": // if testType = "COMMON", only check common
+			testCommon(statusCode, contentType, jsonSchema, location);
+			break;
+		case "TIME": // if testType = "TIME", only check time
+			if (pm.response.code === statusCode) {
+				time && checkTime(time);
+			}
+			break;
+		default: // other: check both common and time
+			testCommon(statusCode, contentType, jsonSchema, location);
+			if (pm.response.code === statusCode) {
+				time && checkTime(time);
+			}
+	  }	
 }
 
 /**
@@ -50,7 +72,16 @@ function testCommonAndTime(statusCode, time, contentType, jsonSchema, location) 
 function logResponseBody() {
 	// The "pm.test" function is being used because a console log results in an unreadable small vertical text. This method will count as an extra test.
 	const RESPONSE_BODY = pm.response.text();
-	RESPONSE_BODY && pm.test(`Response Body: ${RESPONSE_BODY}`, () => {});
+	if (RESPONSE_BODY && !/^504|401|403$/.test(pm.response.code)) {
+		try {
+			JSON.parse(RESPONSE_BODY);
+			pm.test(`Response Body: ${RESPONSE_BODY}`, () => {});
+		} catch (error) {
+			console.log("Response body is not valid JSON");
+		}
+	} else {
+		pm.test(`Response Body: ${RESPONSE_BODY}`, () => {});
+	}
 }
 
 /**
@@ -226,9 +257,8 @@ function checkStatusCode(statusCode) {
 		if (pm.response.code != statusCode) {
 			for (let i = 0; i < ERROR_CODES.length; i++) {
 				if (pm.response.code === ERROR_CODES[i]) {
-					/**
-                    * postman.setNextRequest(null);
-                    */
+					/**postman.setNextRequest(null);
+					console.log(COMMON.SCRIPT_INTERRUPTED.MESSAGE);*/
 					break;
 				}
 			}
